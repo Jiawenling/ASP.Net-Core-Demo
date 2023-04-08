@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoConsoleApp", "DemoConso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.test", "Demo.test\Demo.test.csproj", "{03699BEA-9782-4F99-B257-954FB89C44DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoApi", "ToDoApi\ToDoApi.csproj", "{758B113A-E80F-436F-8180-7AD2D64953AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{03699BEA-9782-4F99-B257-954FB89C44DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03699BEA-9782-4F99-B257-954FB89C44DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03699BEA-9782-4F99-B257-954FB89C44DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{758B113A-E80F-436F-8180-7AD2D64953AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{758B113A-E80F-436F-8180-7AD2D64953AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{758B113A-E80F-436F-8180-7AD2D64953AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{758B113A-E80F-436F-8180-7AD2D64953AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
