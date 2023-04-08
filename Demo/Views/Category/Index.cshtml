@@ -3,6 +3,25 @@
 }
 
 <h1>
-    Category page
+    Category page:
 </h1>
-
+<div class="col-6 text-end">
+    <a asp-controller="Category" asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> &nbsp; Create New Category
+    </a>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Names:</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var obj in Model)
+        {
+            <tr>
+                <td>@obj.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>

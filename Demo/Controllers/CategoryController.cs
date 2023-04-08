@@ -20,19 +20,46 @@ namespace Demo.Controllers
             _db = connection;
         }
         // GET: /<controller>/
-        public async IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             await _db.OpenAsync();
 
-            using var command = new MySqlCommand("SELECT field FROM table;", _db);
+            using var command = new MySqlCommand("SELECT Name from Categories", _db);
             using var reader = await command.ExecuteReaderAsync();
             List<Category> categories = new List<Category>();
             while (await reader.ReadAsync())
             {
-                var value = reader.GetValue(0);
+                var value = reader.GetFieldValue<string>(0);
                 // do something with 'value'
+                categories.Add(new Category() { Name = value });
             }
+            return View(categories);
+        }
+
+        public IActionResult Create()
+        {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Category category)
+        {
+            await _db.OpenAsync();
+
+            using var command = new MySqlCommand("INSERT INTO Categories (Name, DisplayOrder, CreatedDateTime) VALUES (name, displayOrder, newdate);", _db);
+            command.Parameters.AddWithValue("name", category.Name);
+            command.Parameters.AddWithValue("displayOrder", category.DisplayOrder);
+            command.Parameters.AddWithValue("newdate", DateTime.Now.ToString("yyyy/MM/dd"));
+
+            var result = command.ExecuteNonQuery();
+            if (result == 1)
+            {
+                TempData["Success"] = "Successfully Created";
+                return RedirectToAction("Index");
+            }
+            else TempData["Error"] = "Error creating entry";
+            return View(category);
         }
     }
 }
