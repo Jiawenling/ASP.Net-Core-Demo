@@ -1,4 +1,5 @@
 ﻿using Demo.Data;
+using Demo.Repository;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 
@@ -9,6 +10,7 @@ builder.Services.AddControllersWithViews();
 //builder.Services.AddTransient<MySqlConnection>(_ =>
 //    new MySqlConnection(builder.Configuration.GetConnectionString("Default")));
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

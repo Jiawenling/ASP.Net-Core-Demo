@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Demo.Data;
 using Demo.Models;
+using Demo.Repository;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -15,15 +16,15 @@ namespace Demo.Controllers
     public class CategoryController : Controller
     {
         //private readonly MySqlConnection _db;
-        private readonly ApplicationDbContext _db; 
-        public CategoryController(ApplicationDbContext db)
+        private readonly ICategoryRepository _db; 
+        public CategoryController(ICategoryRepository db)
         {
             _db = db;
         }
        
         public IActionResult Index()
         {
-            IEnumerable<Category> categories = _db.Categories;
+            IEnumerable<Category> categories = _db.GetAll().ToList();
             return View(categories);
         }
 
@@ -42,8 +43,8 @@ namespace Demo.Controllers
             }
             if (ModelState.IsValid)
             {
-                _db.Categories.Add(category);
-                _db.SaveChanges();
+                _db.Add(category);
+                _db.Save();
                 TempData["Success"] = "Entry successfully created!";
                 return RedirectToAction("Index");
             }
