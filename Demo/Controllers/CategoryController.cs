@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Demo.Data;
 using Demo.Models;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
@@ -13,26 +14,16 @@ namespace Demo.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly MySqlConnection _db;
-
-        public CategoryController(MySqlConnection connection)
+        //private readonly MySqlConnection _db;
+        private readonly ApplicationDbContext _db; 
+        public CategoryController(ApplicationDbContext db)
         {
-            _db = connection;
+            _db = db;
         }
-        // GET: /<controller>/
-        public async Task<IActionResult> Index()
+       
+        public IActionResult Index()
         {
-            await _db.OpenAsync();
-
-            using var command = new MySqlCommand("SELECT Name from Categories", _db);
-            using var reader = await command.ExecuteReaderAsync();
-            List<Category> categories = new List<Category>();
-            while (await reader.ReadAsync())
-            {
-                var value = reader.GetFieldValue<string>(0);
-                // do something with 'value'
-                categories.Add(new Category() { Name = value });
-            }
+            IEnumerable<Category> categories = _db.Categories;
             return View(categories);
         }
 
@@ -43,24 +34,63 @@ namespace Demo.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Category category)
+        public IActionResult Create(Category category)
         {
-            await _db.OpenAsync();
-
-            using var command = new MySqlCommand("INSERT INTO Categories (Name, DisplayOrder, CreatedDateTime) VALUES (name, displayOrder, newdate);", _db);
-            command.Parameters.AddWithValue("name", category.Name);
-            command.Parameters.AddWithValue("displayOrder", category.DisplayOrder);
-            command.Parameters.AddWithValue("newdate", DateTime.Now.ToString("yyyy/MM/dd"));
-
-            var result = command.ExecuteNonQuery();
-            if (result == 1)
+            if(category.Name == category.DisplayOrder.ToString())
             {
-                TempData["Success"] = "Successfully Created";
+                ModelState.AddModelError("name", "The Display Order cannot be the same as Name");
+            }
+            if (ModelState.IsValid)
+            {
+                _db.Categories.Add(category);
+                _db.SaveChanges();
+                TempData["Success"] = "Entry successfully created!";
                 return RedirectToAction("Index");
             }
-            else TempData["Error"] = "Error creating entry";
-            return View(category);
+            else return View(category);
         }
+        // GET: /<controller>/
+        //public async Task<IActionResult> Index()
+        //{
+        //    await _db.OpenAsync();
+
+        //    using var command = new MySqlCommand("SELECT Name from Categories", _db);
+        //    using var reader = await command.ExecuteReaderAsync();
+        //    List<Category> categories = new List<Category>();
+        //    while (await reader.ReadAsync())
+        //    {
+        //        var value = reader.GetFieldValue<string>(0);
+        //        // do something with 'value'
+        //        categories.Add(new Category() { Name = value });
+        //    }
+        //    return View(categories);
+        //}
+
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(Category category)
+        //{
+        //    await _db.OpenAsync();
+
+        //    using var command = new MySqlCommand("INSERT INTO Categories (Name, DisplayOrder, CreatedDateTime) VALUES (name, displayOrder, newdate);", _db);
+        //    command.Parameters.AddWithValue("name", category.Name);
+        //    command.Parameters.AddWithValue("displayOrder", category.DisplayOrder);
+        //    command.Parameters.AddWithValue("newdate", DateTime.Now.ToString("yyyy/MM/dd"));
+
+        //    var result = command.ExecuteNonQuery();
+        //    if (result == 1)
+        //    {
+        //        TempData["Success"] = "Successfully Created";
+        //        return RedirectToAction("Index");
+        //    }
+        //    else TempData["Error"] = "Error creating entry";
+        //    return View(category);
+        //}
     }
 }
 
